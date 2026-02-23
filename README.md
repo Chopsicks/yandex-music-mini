@@ -2,7 +2,8 @@
 
 Неофициальный компактный десктоп-клиент для Яндекс.Музыки с глобальными хоткеями, эквалайзером и персональной волной.
 
-![Скриншот плеера](<img width="530" height="294" alt="image" src="https://github.com/user-attachments/assets/4d3828c9-599d-4148-a327-a60eea48c70e" />)  
+<img width="530" height="294" alt="image" src="https://github.com/user-attachments/assets/9763c5b5-1382-4d66-95f5-1bbb28657035" />
+
 
 
 ## Особенности
