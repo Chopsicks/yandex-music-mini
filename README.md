@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="icon.png" alt="Yandex Music Mini Logo" width="120" height="120">
   <h1>🎵 Яндекс.Музыка мини</h1>
   <p><strong>Неофициальный компактный десктоп-клиент для Яндекс.Музыки</strong></p>
   
