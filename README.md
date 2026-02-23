@@ -4,7 +4,7 @@
   </p>
   <p>
     <a href="#-особенности">Особенности</a> •
-    <a href="#-установка">Установка</a> •
+    <a href="#[-установка](https://github.com/Chopsicks/yandex-music-mini/tree/main?tab=readme-ov-file#%EF%B8%8F-%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0)">Установка</a> •
     <a href="#-лицензия">Лицензия</a>
   </p>
   <br>
