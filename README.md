@@ -2,16 +2,7 @@
   <img src="icon.png" alt="Yandex Music Mini Logo" width="120" height="120">
   <h1>🎵 Яндекс.Музыка мини</h1>
   <p><strong>Неофициальный компактный десктоп-клиент для Яндекс.Музыки</strong></p>
-  <p>
-    <a href="https://github.com/frizzylow/yandex-music-mini/releases">
-      <img src="https://img.shields.io/github/v/release/frizzylow/yandex-music-mini?style=flat-square&color=fed42a" alt="Latest Release">
-    </a>
-    <a href="https://github.com/frizzylow/yandex-music-mini/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/frizzylow/yandex-music-mini?style=flat-square&color=fed42a" alt="License">
-    </a>
-    <a href="https://github.com/frizzylow/yandex-music-mini/issues">
-      <img src="https://img.shields.io/github/issues/frizzylow/yandex-music-mini?style=flat-square&color=fed42a" alt="Issues">
-    </a>
+  
   </p>
   <p>
     <a href="#-особенности">Особенности</a> •
