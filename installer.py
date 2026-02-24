@@ -12,7 +12,7 @@ import time
 from PIL import Image, ImageTk
 
 APP_NAME = "Установка Яндекс Музыка мини"
-APP_DOWNLOAD_URL = "https://downloader.disk.yandex.ru/disk/da340bc1e80690401621849abfec9bec70954a3395c3d7dc44772385519be477/699ccd6f/oG5xi8JFNeuYz4VvxuvzqjLMY0lCb1BMQL69WfMYpsJGYlnpE3u9O1Gl3Pwjnbg6R2CtluF8s3AL6HwPI68WDQ%3D%3D?uid=0&filename=Yandex.Music%20mini.exe&disposition=attachment&hash=rXd18NMlozT4Fq8wNVIsRYgdxwChsJLXZzbykYRnvNVw82OM1h7lqJybNKBhW5d%2Bq/J6bpmRyOJonT3VoXnDag%3D%3D%3A&limit=0&content_type=application%2Fvnd.microsoft.portable-executable&owner_uid=1941007192&fsize=51067463&hid=1b738389442d7d6da452591985192904&media_type=executable&tknv=v3"
+APP_DOWNLOAD_URL = "http://f1236508.xsph.ru/Yandex.Music%20mini.exe"
 VLC_DOWNLOAD_URL = "https://mirror.accum.se/mirror/videolan.org/vlc/3.0.23/win64/vlc-3.0.23-win64.exe"
 INSTALL_DIR = os.path.join(os.getenv("LOCALAPPDATA"), "YandexMiniMusic")
 EXE_NAME = "app.exe"
