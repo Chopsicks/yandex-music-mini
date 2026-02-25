@@ -1145,9 +1145,7 @@
             </div>
         </div>
 
-       <!-- Секция скачивания (переработанные карточки) -->
-<!-- Секция скачивания (переработанные карточки) -->
-<section id="download">
+   <section id="download">
     <div class="container">
         <h2 class="section-title fade-up"><span data-i18n="downloadTitle">Скачать</span> <span data-i18n="downloadTitle2">приложение</span></h2>
         <div class="download-grid">
@@ -1155,7 +1153,7 @@
                 <i class="fab fa-windows"></i>
                 <h3 data-i18n="windows">Windows</h3>
                 <div class="version">10 / 11 (64/32-bit)</div>
-                <a href="http://f1236508.xsph.ru/Yandex_Music_x64_2.8.exe" target="_blank" class="btn" data-i18n="downloadBtn">Скачать .exe</a>
+                <a href="#" onclick="downloadFile(event, 'http://f1236508.xsph.ru/Yandex_Music_x64_2.8.exe', 'Yandex_Music_x64_2.8.exe')" class="btn" data-i18n="downloadBtn">Скачать .exe</a>
             </div>
             <div class="download-card fade-up">
                 <i class="fab fa-linux"></i>
@@ -1227,7 +1225,17 @@
                 setTheme(e.target.checked ? 'dark' : 'light');
             });
         }
- 
+
+    function downloadFile(event, url, filename) {
+        event.preventDefault();
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
         // ===== ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА (полный перевод) =====
         const translations = {
             ru: {
