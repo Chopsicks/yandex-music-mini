@@ -939,6 +939,7 @@
     <!-- Шапка с навигацией -->
     <nav class="navbar">
         <a href="#" class="logo">
+            <i class="fas fa-music"></i>
             <span data-i18n="appName">Я.Музыка мини</span>
         </a>
         <div class="nav-links">
@@ -967,7 +968,9 @@
                 <li><a href="https://github.com/boppreh/keyboard" target="_blank">keyboard</a> — глобальные горячие клавиши</li>
                 <li><a href="https://www.selenium.dev/" target="_blank">selenium</a> — автоматическая авторизация (опционально)</li>
             </ul>
-            <p>Исходный код доступен на <a href="https://github.com/Chopsicks/yandex-music-mini" target="_blank">GitHub</a> под лицензией MIT.</p>
+            <p>Исходный код доступен на <a href="https://github.com/frizzylow/yandex-music-mini" target="_blank">GitHub</a> под лицензией MIT.</p>
+
+            <p style="margin-top: 1.5rem;"><em>Для замены аватарки и иконки приложения поместите файлы <code>avatar.png</code> и <code>icon.png</code> в папку с сайтом. Размер: 200x200 px.</em></p>
 
             <button class="modal-close" id="closeModal" data-i18n="modalClose">Закрыть</button>
         </div>
@@ -977,7 +980,7 @@
         <!-- Герой-секция -->
         <section id="hero" class="hero fade-up">
             <div class="container">
-                <h1><span data-i18n="heroTitle1">Одно приложение</span> <span data-i18n="heroTitle2">Я.Музыки мини</span><br><span data-i18n="heroTitle3">избавит от множества других</span></h1>
+                <h1><span data-i18n="heroTitle1">Одно приложение</span> <span data-i18n="heroTitle2">Яндекс.Музыки</span><br><span data-i18n="heroTitle3">для компьютера</span></h1>
                 <p data-i18n="heroDesc">Компактный виджет с глобальными горячими клавишами, эквалайзером и умной волной</p>
                 <a href="#download" class="btn" data-i18n="heroBtn">Скачать для Windows</a>
             </div>
@@ -999,7 +1002,7 @@
                 <!-- Секция с аватаром и именем (слева, под названием) -->
                 <div class="mockup-user-section">
                     <div class="mockup-user-header" id="mockupUserHeader">
-                        <img src="avatar.jpg" alt="avatar" class="mockup-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%23fed42a%22%2F%3E%3Ctext%20x%3D%225%22%20y%3D%2218%22%20fill%3D%22%231a1a1a%22%20font-size%3D%2214%22%3EU%3C%2Ftext%3E%3C%2Fsvg%3E';">
+                        <img src="avatar.png" alt="avatar" class="mockup-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%23fed42a%22%2F%3E%3Ctext%20x%3D%225%22%20y%3D%2218%22%20fill%3D%22%231a1a1a%22%20font-size%3D%2214%22%3EU%3C%2Ftext%3E%3C%2Fsvg%3E';">
                         <span class="mockup-user-name">frizzylow</span>
                         <!-- Контекстное меню профиля (скрыто по умолчанию) -->
                         <div class="profile-context-menu" id="profileContextMockup">
@@ -1011,8 +1014,8 @@
 
                 <div class="mockup-main">
                     <div class="mockup-left">
-                        <div class="mockup-track-title" data-i18n="mockupTitle">Shape of You</div>
-                        <div class="mockup-track-artist" data-i18n="mockupArtist">Ed Sheeran</div>
+                        <div class="mockup-track-title" data-i18n="mockupTitle">Моя волна</div>
+                        <div class="mockup-track-artist" data-i18n="mockupArtist">Яндекс.Музыка</div>
                         <!-- Кнопки управления с дополнительным отступом сверху -->
                         <div class="mockup-buttons">
                             <div class="mockup-btn"><i class="fas fa-backward"></i></div>
@@ -1033,7 +1036,7 @@
                         </div>
                     </div>
                     <div class="mockup-right">
-                        <img src="icon.jpg" alt="cover" style="width:100%; height:100%; object-fit:cover; border-radius:16px;" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\'fas fa-music\'></i>';">
+                        <img src="icon.png" alt="cover" style="width:100%; height:100%; object-fit:cover; border-radius:16px;" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\'fas fa-music\'></i>';">
                     </div>
                 </div>
             </div>
@@ -1135,39 +1138,41 @@
         <div class="container fade-up">
             <div class="dev-card">
                 <div class="dev-avatar">
-                    <img src="avatar.jpg" alt="avatar" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\'fas fa-code\'></i>';">
+                    <img src="avatar.png" alt="avatar" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\'fas fa-code\'></i>';">
                 </div>
                 <div class="dev-info">
                     <h2><span data-i18n="devTitle">Разработчик</span> <span style="color:#fed42a;">frizzylow</span></h2>
                     <p data-i18n="devDesc">Независимый разработчик, создающий удобные инструменты. Проект с открытым исходным кодом.</p>
-                    <p><a href="https://github.com/Chopsicks/" target="_blank"><i class="fab fa-github"></i> GitHub</a> · <a href="https://t.me/frizzylow" target="_blank"><i class="fab fa-telegram"></i> @frizzylow</a></p>
+                    <p><a href="https://github.com/frizzylow/yandex-music-mini" target="_blank"><i class="fab fa-github"></i> GitHub</a> · <a href="https://t.me/frizzylow" target="_blank"><i class="fab fa-telegram"></i> @frizzylow</a></p>
                 </div>
             </div>
         </div>
 
-   <section id="download">
-    <div class="container">
-        <h2 class="section-title fade-up"><span data-i18n="downloadTitle">Скачать</span> <span data-i18n="downloadTitle2">приложение</span></h2>
-        <div class="download-grid">
-            <div class="download-card fade-up">
-                <i class="fab fa-windows"></i>
-                <h3 data-i18n="windows">Windows</h3>
-                <div class="version">10 / 11 (64/32-bit)</div>
-                <a href="#" onclick="downloadFile(event, 'http://f1236508.xsph.ru/Yandex_Music_x64_2.8.exe', 'Yandex_Music_x64_2.8.exe')" class="btn" data-i18n="downloadBtn">Скачать .exe</a>
+        <!-- Секция скачивания (переработанные карточки) -->
+        <section id="download">
+            <div class="container">
+                <h2 class="section-title fade-up"><span data-i18n="downloadTitle">Скачать</span> <span data-i18n="downloadTitle2">приложение</span></h2>
+                <div class="download-grid">
+                    <div class="download-card fade-up">
+                        <i class="fab fa-windows"></i>
+                        <h3 data-i18n="windows">Windows</h3>
+                        <div class="version">10 / 11 (64-bit)</div>
+                        <a href="http://f1236508.xsph.ru/Yandex_Music_x64_2.8.exe" class="btn" id="downloadWin" data-i18n="downloadBtn">Скачать .exe</a>
+                    </div>
+                    <div class="download-card fade-up">
+                        <i class="fab fa-linux"></i>
+                        <h3 data-i18n="linux">Linux</h3>
+                        <div class="version">AppImage / deb</div>
+                        <a href="#" class="btn btn-disabled" data-i18n="inDev">В разработке</a>
+                    </div>
+                </div>
+                <div class="requirements fade-up">
+                    <p data-i18n="sysReq1"><strong>Системные требования (Windows):</strong> Windows 10/11 (64-bit), 2 ГБ ОЗУ, VLC.</p>
+                    <p data-i18n="sysReq2">Прослушивание музыки доступно только с подпиской Яндекс Плюс. <a href="#" class="secondary-link" data-i18n="subLink">Условия подписки</a></p>
+                    <p data-i18n="sysReq3">Исходный код на <a href="https://github.com/frizzylow/yandex-music-mini" target="_blank">GitHub</a>.</p>
+                </div>
             </div>
-            <div class="download-card fade-up">
-                <i class="fab fa-linux"></i>
-                <h3 data-i18n="linux">Linux</h3>
-                <div class="version">AppImage / deb</div>
-                <a href="#" class="btn btn-disabled" data-i18n="inDev">В разработке</a>
-            </div>
-        </div>
-        <div class="requirements fade-up">
-            <p data-i18n="sysReq1"><strong>Системные требования (Windows):</strong> Windows 10/11 (64-bit), 2 ГБ ОЗУ, VLC.</p>
-            <p data-i18n="sysReq2">Прослушивание музыки доступно только с подпиской Яндекс Плюс (ну почти :P)</p>
-        </div>
-    </div>
-</section>
+        </section>
     </main>
 
     <!-- Футер -->
@@ -1175,8 +1180,8 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-links">
-                    <a id="privacyLink" data-i18n="privacy">О проекте</a>
-                    <a href="https://github.com/Chopsicks/yandex-music-mini" target="_blank">GitHub</a>
+                    <a id="privacyLink" data-i18n="privacy">Политика конфиденциальности</a>
+                    <a href="https://github.com/frizzylow/yandex-music-mini" target="_blank">GitHub</a>
                 </div>
                 <div class="theme-lang">
                     <div class="lang-selector">
@@ -1226,16 +1231,6 @@
             });
         }
 
-    function downloadFile(event, url, filename) {
-        event.preventDefault();
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
         // ===== ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА (полный перевод) =====
         const translations = {
             ru: {
@@ -1245,12 +1240,12 @@
                 navSettings: 'Настройки',
                 navDownload: 'Скачать',
                 heroTitle1: 'Одно приложение',
-                heroTitle2: 'Я.Музыки мини',
-                heroTitle3: 'избавит от множества других',
+                heroTitle2: 'Яндекс.Музыки',
+                heroTitle3: 'для компьютера',
                 heroDesc: 'Компактный виджет с глобальными горячими клавишами, эквалайзером и умной волной',
                 heroBtn: 'Скачать для Windows',
-                mockupTitle: 'Shape of You',
-                mockupArtist: 'Ed Sheeran',
+                mockupTitle: 'Моя волна',
+                mockupArtist: 'Яндекс.Музыка',
                 featuresTitle: 'Ключевые',
                 featuresTitle2: 'возможности',
                 feature1Title: 'Глобальные хоткеи',
@@ -1288,8 +1283,10 @@
                 downloadBtn: 'Скачать .exe',
                 inDev: 'В разработке',
                 sysReq1: '<strong>Системные требования (Windows):</strong> Windows 10/11 (64-bit), 2 ГБ ОЗУ, VLC.',
-                sysReq2: 'Прослушивание музыки доступно только с подпиской Яндекс Плюс (ну почти)',
-                privacy: 'О проекте',
+                sysReq2: 'Прослушивание музыки доступно только с подпиской Яндекс Плюс.',
+                subLink: 'Условия подписки',
+                sysReq3: 'Исходный код на',
+                privacy: 'Политика конфиденциальности',
                 modalTitle: 'О проекте',
                 modalText1: 'Это <strong>неофициальная</strong> фанатская версия приложения для Яндекс.Музыки. Мы не связаны с Яндексом и не несём ответственности за использование программы.',
                 modalText2: 'Оригинальный сервис: <a href="https://music.yandex.ru" target="_blank" style="color:#fed42a;">Яндекс.Музыка</a>.',
@@ -1340,7 +1337,7 @@
                 downloadTitle: 'Download',
                 downloadTitle2: 'app',
                 windows: 'Windows',
-                winVersion: '10 / 11 (64/32-bit)',
+                winVersion: '10 / 11 (64-bit)',
                 linux: 'Linux',
                 linuxVersion: 'AppImage / deb',
                 downloadBtn: 'Download .exe',
@@ -1416,6 +1413,14 @@
 
         fadeElements.forEach(el => observer.observe(el));
 
+        // ===== ССЫЛКИ НА СКАЧИВАНИЕ (имитация скачивания) =====
+        document.getElementById('downloadWin').addEventListener('click', (e) => {
+            e.preventDefault();
+            const link = document.createElement('a');
+            link.href = 'data:application/octet-stream;charset=utf-8,' + encodeURIComponent('Это тестовый файл. Замените на реальный установщик.');
+            link.download = 'YandexMusicMini_Setup.exe';
+            link.click();
+        });
 
         // ===== ПЛАВНЫЙ СКРОЛЛ К ЯКОРЯМ =====
         document.querySelectorAll('.nav-links a').forEach(link => {
