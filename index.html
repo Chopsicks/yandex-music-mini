@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Яндекс.Музыка мини — неофициальный плеер</title>
+    <!-- Подключаем шрифт Inter и Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ===== СБРОС И ПЕРЕМЕННЫЕ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #0b0b0b;
+            color: #fff;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            scroll-behavior: smooth;
+
+            /* Скрываем полосы прокрутки */
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        body::-webkit-scrollbar {
+            display: none; /* Chrome/Safari/Opera */
+        }
+
+        /* Светлая тема */
+        body.light-theme {
+            background-color: #ffffff;
+            color: #1a1a1a;
+        }
+        body.light-theme .card,
+        body.light-theme .feature-card,
+        body.light-theme .dev-card,
+        body.light-theme .mockup-window,
+        body.light-theme .settings-panel {
+            background: #f5f5f5;
+            color: #333;
+        }
+        body.light-theme .feature-card p,
+        body.light-theme .card p,
+        body.light-theme .dev-card p,
+        body.light-theme .settings-panel p {
+            color: #666;
+        }
+        body.light-theme .btn-outline {
+            border-color: #e0e0e0;
+            color: #333;
+        }
+        body.light-theme .btn-outline:hover {
+            background: #f0f0f0;
+        }
+
+        /* Все ссылки — жёлтые или серые, без подчёркивания */
+        a {
+            color: #fed42a;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: #e0b800;
+        }
+        .footer a, .secondary-link {
+            color: rgba(255,255,255,0.6);
+        }
+        .footer a:hover, .secondary-link:hover {
+            color: #fed42a;
+        }
+        body.light-theme .footer a,
+        body.light-theme .secondary-link {
+            color: #666;
+        }
+        body.light-theme .footer a:hover,
+        body.light-theme .secondary-link:hover {
+            color: #fed42a;
+        }
+
+        /* ===== НАВИГАЦИЯ ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: rgba(11, 11, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: none;
+        }
+        .light-theme .navbar {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: #fff;
+            text-decoration: none;
+        }
+        .logo i {
+            color: #fed42a;
+            font-size: 1.5rem;
+        }
+        .light-theme .logo {
+            color: #1a1a1a;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .light-theme .nav-links a {
+            color: #4a4a4a;
+        }
+        .nav-links a:hover {
+            color: #fed42a;
+        }
+
+        /* ===== КОНТЕЙНЕР ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== СЕКЦИИ ===== */
+        section {
+            padding: 6rem 0 4rem;
+        }
+
+        .hero {
+            padding-top: 8rem;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 span {
+            color: #fed42a;
+        }
+        .hero p {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+        .light-theme .hero p {
+            color: #666;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fed42a;
+            color: #1a1a1a;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            border: none;
+            box-shadow: 0 8px 20px rgba(254, 212, 42, 0.2);
+            animation: pulse 3s infinite;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 28px rgba(254, 212, 42, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #fed42a;
+            color: #fff;
+            box-shadow: none;
+        }
+        .light-theme .btn-outline {
+            color: #1a1a1a;
+        }
+        .btn-outline:hover {
+            background: rgba(254, 212, 42, 0.1);
+            transform: scale(1.02);
+        }
+        /* Убираем пульсацию у заблокированной кнопки */
+        .btn-disabled {
+            background: #555;
+            color: #aaa;
+            pointer-events: none;
+            box-shadow: none;
+            animation: none !important;
+        }
+
+        /* ===== МОКАП ПЛЕЕРА (точная копия интерфейса из кода) ===== */
+        .player-mockup {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(16px);
+            border-radius: 32px;
+            padding: 1.5rem;
+            max-width: 500px;
+            margin: 3rem auto;
+            box-shadow: 0 30px 50px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05);
+            border: none;
+            transition: transform 0.4s, box-shadow 0.4s;
+            position: relative;
+        }
+        .player-mockup:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 40px 60px -20px #fed42a20, 0 0 0 1px #fed42a40;
+        }
+        .light-theme .player-mockup {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 30px 50px -20px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05);
+        }
+        .mockup-titlebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.8); /* Цвет названия и кнопок */
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+        .light-theme .mockup-titlebar {
+            color: #333; /* Тёмно-серый для светлой темы */
+        }
+        .mockup-titlebar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mockup-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .mockup-controls button {
+            background: none;
+            border: none;
+            color: inherit; /* Наследуем цвет от родителя */
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+            transition: background 0.2s;
+        }
+        .mockup-controls button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Аватарка пользователя теперь слева, под названием */
+        .mockup-user-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .mockup-user-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px 4px 4px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+        .light-theme .mockup-user-header {
+            background: rgba(0,0,0,0.05);
+        }
+        .mockup-user-header:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .light-theme .mockup-user-header:hover {
+            background: rgba(0,0,0,0.1);
+        }
+        .mockup-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #fed42a;
+            background: #ddd;
+        }
+        .mockup-avatar-fallback {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #fed42a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #1a1a1a;
+        }
+        .mockup-user-name {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .mockup-main {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .mockup-left {
+            flex: 2;
+        }
+        .mockup-track-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+        .mockup-track-artist {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 1rem;
+        }
+        .light-theme .mockup-track-artist {
+            color: #666;
+        }
+        /* Кнопки управления с дополнительным отступом сверху */
+        .mockup-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1rem;
+            margin-top: 24px; /* Опустили кнопки ниже */
+        }
+        .mockup-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+        .light-theme .mockup-btn {
+            background: rgba(0,0,0,0.05);
+            color: #333;
+        }
+        .mockup-btn.play {
+            background: #fed42a;
+            color: #1a1a1a;
+            width: 48px;
+            height: 48px;
+            font-size: 1.4rem;
+        }
+        /* Прогресс и лайки в одном ряду, причём лайки слева */
+        .mockup-bottom-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+        .mockup-like-section {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-right: 8px;
+        }
+        .mockup-like-section i {
+            color: #fed42a;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        .mockup-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        .mockup-time {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+            min-width: 35px;
+        }
+        .light-theme .mockup-time {
+            color: #888;
+        }
+        .mockup-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            position: relative;
+        }
+        .light-theme .mockup-bar {
+            background: rgba(0,0,0,0.1);
+        }
+        .mockup-bar-fill {
+            width: 45%;
+            height: 100%;
+            background: #fed42a;
+            border-radius: 2px;
+        }
+        .mockup-right {
+            width: 90px;
+            height: 90px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fed42a;
+        }
+        .light-theme .mockup-right {
+            background: rgba(0,0,0,0.05);
+        }
+
+        /* Контекстное меню профиля (выпадающее) */
+        .profile-context-menu {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            background: rgba(30,30,30,0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            min-width: 160px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+        }
+        .profile-context-menu.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+        .light-theme .profile-context-menu {
+            background: rgba(255,255,255,0.9);
+            border-color: rgba(0,0,0,0.1);
+            color: #333;
+        }
+        .profile-context-menu .menu-item {
+            padding: 10px 15px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .profile-context-menu .menu-item:last-child {
+            border-bottom: none;
+        }
+        .profile-context-menu .menu-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .light-theme .profile-context-menu .menu-item {
+            border-bottom-color: rgba(0,0,0,0.05);
+        }
+        .light-theme .profile-context-menu .menu-item:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        .profile-context-menu .menu-item i {
+            color: #fed42a;
+            width: 18px;
+        }
+
+        /* ===== ПАНЕЛЬ НАСТРОЕК (стилизованная под код) ===== */
+        .settings-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 48px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(8px);
+        }
+        .light-theme .settings-panel {
+            background: #f5f5f5;
+            border-color: #eaeaea;
+        }
+        .settings-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .setting-item {
+            margin-bottom: 1.5rem;
+        }
+        .setting-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            color: rgba(255,255,255,0.9);
+        }
+        .light-theme .setting-label {
+            color: #333;
+        }
+        .setting-label i {
+            color: #fed42a;
+        }
+        .volume-slider {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            -webkit-appearance: none;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fed42a;
+            cursor: pointer;
+            box-shadow: 0 0 10px #fed42a;
+        }
+        select, .equalizer-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 40px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .light-theme select, .light-theme .equalizer-select {
+            background: #fff;
+            color: #333;
+            border-color: #ddd;
+        }
+        select:focus, .equalizer-select:focus {
+            border-color: #fed42a;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+            margin-left: 1rem;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: 0.2s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: #fff;
+            transition: 0.2s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #fed42a;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        .key-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.2rem;
+        }
+        .light-theme .key-badge {
+            background: #eaeaea;
+        }
+
+        /* ===== КАРТОЧКИ ВОЗМОЖНОСТЕЙ ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 32px;
+            padding: 2rem 1.5rem;
+            transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 30px -10px #fed42a20;
+        }
+        .light-theme .feature-card:hover {
+            background: #eaeaea;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #fed42a;
+            margin-bottom: 1.5rem;
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* ===== БЛОК РАЗРАБОТЧИКА ===== */
+        .dev-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 48px;
+            padding: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            margin: 4rem 0;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .light-theme .dev-card {
+            background: #f5f5f5;
+        }
+        .dev-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #fed42a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #1a1a1a;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .dev-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===== СКАЧИВАНИЕ (переработанные карточки) ===== */
+        .download-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        .download-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 28px;
+            padding: 1.8rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .download-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px -10px #fed42a30;
+        }
+        .download-card i {
+            font-size: 2.2rem;
+            color: #fed42a;
+            margin-bottom: 1rem;
+        }
+        .download-card h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .download-card .version {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 1.5rem;
+        }
+        .light-theme .download-card .version {
+            color: #888;
+        }
+        .download-card .btn {
+            align-self: stretch;
+            text-align: center;
+            justify-content: center;
+            margin-top: 0.5rem;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+        }
+        .download-card .btn-disabled {
+            background: transparent;
+            border: 1px solid #555;
+            color: #aaa;
+            pointer-events: none;
+            animation: none;
+        }
+        .light-theme .download-card .btn-disabled {
+            border-color: #ccc;
+            color: #999;
+        }
+
+        /* ===== МОДАЛЬНОЕ ОКНО (политика + информация) ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(30,30,30,0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 48px;
+            padding: 2.5rem;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: modalFade 0.3s;
+
+            /* Скрываем полосу прокрутки в модалке */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .modal-content::-webkit-scrollbar {
+            display: none;
+        }
+        .light-theme .modal-content {
+            background: rgba(255,255,255,0.9);
+            color: #333;
+        }
+        @keyframes modalFade {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-content h2 {
+            margin-bottom: 1.5rem;
+            color: #fed42a;
+        }
+        .modal-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .modal-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .modal-content li {
+            margin-bottom: 0.5rem;
+        }
+        .modal-content a {
+            color: #fed42a;
+            text-decoration: none;
+        }
+        .modal-content a:hover {
+            text-decoration: underline;
+        }
+        .modal-close {
+            background: #fed42a;
+            border: none;
+            color: #1a1a1a;
+            font-weight: 600;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        /* ===== ФУТЕР ===== */
+        .footer {
+            padding: 2rem 0 3rem;
+            border-top: none;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .footer-links a:hover {
+            color: #fed42a;
+        }
+        .theme-lang {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .lang-selector {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .lang-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            transition: color 0.2s;
+        }
+        .light-theme .lang-btn {
+            color: #999;
+        }
+        .lang-btn.active {
+            color: #fed42a;
+        }
+        .theme-toggle {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            font-size: 1.2rem;
+        }
+        .light-theme .theme-toggle {
+            background: #eaeaea;
+            color: #333;
+        }
+        .theme-toggle:hover {
+            background: #fed42a;
+            color: #1a1a1a;
+            transform: scale(1.05);
+        }
+
+        /* ===== АНИМАЦИИ ===== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.8s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 8px 20px rgba(254, 212, 42, 0.2); }
+            70% { box-shadow: 0 12px 28px rgba(254, 212, 42, 0.3); }
+            100% { box-shadow: 0 8px 20px rgba(254, 212, 42, 0.2); }
+        }
+
+        /* ===== АДАПТАЦИЯ ===== */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .settings-grid { grid-template-columns: 1fr; }
+            .download-grid { grid-template-columns: 1fr; }
+            .dev-card { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка с навигацией -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <span data-i18n="appName">Я.Музыка мини</span>
+        </a>
+        <div class="nav-links">
+            <a href="#hero" data-i18n="navHome">Главная</a>
+            <a href="#features" data-i18n="navFeatures">Возможности</a>
+            <a href="#settings" data-i18n="navSettings">Настройки</a>
+            <a href="#download" data-i18n="navDownload">Скачать</a>
+        </div>
+    </nav>
+
+    <!-- Модальное окно политики конфиденциальности / информации о проекте -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <h2 data-i18n="modalTitle">О проекте</h2>
+            <p data-i18n="modalText1">Это <strong>неофициальная</strong> фанатская версия приложения для Яндекс.Музыки. Мы не связаны с Яндексом и не несём ответственности за использование программы.</p>
+            <p data-i18n="modalText2">Оригинальный сервис: <a href="https://music.yandex.ru" target="_blank">Яндекс.Музыка</a>.</p>
+            <p data-i18n="modalText3">Все права на контент принадлежат их владельцам. Приложение использует открытый API.</p>
+
+            <h3 style="color:#fed42a; margin: 1.5rem 0 0.5rem;">Технические детали</h3>
+            <p>Программа написана на <strong>Python 3.10+</strong> и использует следующие библиотеки:</p>
+            <ul>
+                <li><a href="https://flask.palletsprojects.com/" target="_blank">Flask</a> — лёгкий веб-сервер для интерфейса</li>
+                <li><a href="https://pywebview.flowrl.com/" target="_blank">pywebview</a> — отрисовка окна на основе системного браузера</li>
+                <li><a href="https://www.olivieraubert.net/vlc/python-ctypes/" target="_blank">python-vlc</a> — воспроизведение аудио</li>
+                <li><a href="https://github.com/MarshalX/yandex-music-api" target="_blank">yandex-music</a> — неофициальный API Яндекс.Музыки</li>
+                <li><a href="https://github.com/boppreh/keyboard" target="_blank">keyboard</a> — глобальные горячие клавиши</li>
+                <li><a href="https://www.selenium.dev/" target="_blank">selenium</a> — автоматическая авторизация (опционально)</li>
+            </ul>
+            <p>Исходный код доступен на <a href="https://github.com/Chopsicks/yandex-music-mini" target="_blank">GitHub</a> под лицензией MIT.</p>
+
+            <button class="modal-close" id="closeModal" data-i18n="modalClose">Закрыть</button>
+        </div>
+    </div>
+
+    <main>
+        <!-- Герой-секция -->
+        <section id="hero" class="hero fade-up">
+            <div class="container">
+                <h1><span data-i18n="heroTitle1">Одно приложение</span> <span data-i18n="heroTitle2">Я.Музыки мини</span><br><span data-i18n="heroTitle3">избавит от множества других</span></h1>
+                <p data-i18n="heroDesc">Компактный виджет с глобальными горячими клавишами, эквалайзером и умной волной</p>
+                <a href="#download" class="btn" data-i18n="heroBtn">Скачать для Windows</a>
+            </div>
+        </section>
+
+        <!-- Мокап плеера (точная копия интерфейса) -->
+        <div class="container fade-up">
+            <div class="player-mockup">
+                <!-- Верхняя строка: название программы слева, кнопки управления справа -->
+                <div class="mockup-titlebar">
+                    <span>Яндекс.Музыка мини</span>
+                    <div class="mockup-controls">
+                        <button><i class="fas fa-minus"></i></button>
+                        <!-- Кнопка развернуть убрана -->
+                        <button><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+
+                <!-- Секция с аватаром и именем (слева, под названием) -->
+                <div class="mockup-user-section">
+                    <div class="mockup-user-header" id="mockupUserHeader">
+                        <img src="avatar.jpg" alt="avatar" class="mockup-avatar" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%23fed42a%22%2F%3E%3Ctext%20x%3D%225%22%20y%3D%2218%22%20fill%3D%22%231a1a1a%22%20font-size%3D%2214%22%3EU%3C%2Ftext%3E%3C%2Fsvg%3E';">
+                        <span class="mockup-user-name">frizzylow</span>
+                        <!-- Контекстное меню профиля (скрыто по умолчанию) -->
+                        <div class="profile-context-menu" id="profileContextMockup">
+                            <div class="menu-item"><i class="fas fa-sign-out-alt"></i> Выйти</div>
+                            <div class="menu-item"><i class="fas fa-id-card"></i> Яндекс ID</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mockup-main">
+                    <div class="mockup-left">
+                        <div class="mockup-track-title" data-i18n="mockupTitle">Shape of You</div>
+                        <div class="mockup-track-artist" data-i18n="mockupArtist">Ed Sheeran</div>
+                        <!-- Кнопки управления с дополнительным отступом сверху -->
+                        <div class="mockup-buttons">
+                            <div class="mockup-btn"><i class="fas fa-backward"></i></div>
+                            <div class="mockup-btn play"><i class="fas fa-play"></i></div>
+                            <div class="mockup-btn"><i class="fas fa-forward"></i></div>
+                        </div>
+                        <!-- Прогресс и лайки в одном ряду, причём лайки слева -->
+                        <div class="mockup-bottom-row">
+                            <div class="mockup-like-section">
+                                <i class="far fa-heart"></i>
+                                <i class="fas fa-thumbs-down"></i>
+                            </div>
+                            <div class="mockup-progress">
+                                <span class="mockup-time">1:24</span>
+                                <div class="mockup-bar"><div class="mockup-bar-fill"></div></div>
+                                <span class="mockup-time">3:45</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mockup-right">
+                        <img src="icon.jpg" alt="cover" style="width:100%; height:100%; object-fit:cover; border-radius:16px;" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\'fas fa-music\'></i>';">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция возможностей -->
+        <section id="features">
+            <div class="container">
+                <h2 class="section-title fade-up"><span data-i18n="featuresTitle">Ключевые</span> <span data-i18n="featuresTitle2">возможности</span></h2>
+                <div class="features-grid">
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fas fa-keyboard"></i></div>
+                        <h3 data-i18n="feature1Title">Глобальные хоткеи</h3>
+                        <p data-i18n="feature1Desc">Управляйте музыкой из любого приложения: play/pause, следующий/предыдущий, лайк/дизлайк, громкость и скрытие окна. Полностью настраиваются.</p>
+                    </div>
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fas fa-sliders-h"></i></div>
+                        <h3 data-i18n="feature2Title">Эквалайзер с пресетами</h3>
+                        <p data-i18n="feature2Desc">8 встроенных пресетов: рок, поп, классика, джаз, усиление басов и высоких. Выберите своё звучание.</p>
+                    </div>
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fas fa-wave-square"></i></div>
+                        <h3 data-i18n="feature3Title">Моя волна</h3>
+                        <p data-i18n="feature3Desc">Персональная станция с настройками настроения, языка и разнообразия. Умные рекомендации под ваш вкус.</p>
+                    </div>
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fas fa-heart"></i></div>
+                        <h3 data-i18n="feature4Title">Любимые треки и плейлисты</h3>
+                        <p data-i18n="feature4Desc">Добавляйте в избранное, управляйте плейлистами, создавайте радио на основе трека.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция настроек (стилизованная под реальные настройки из кода) -->
+        <section id="settings">
+            <div class="container">
+                <h2 class="section-title fade-up"><span data-i18n="settingsTitle">Гибкие</span> <span data-i18n="settingsTitle2">настройки</span></h2>
+                <div class="settings-panel fade-up">
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <div class="setting-label"><i class="fas fa-volume-up"></i> <span data-i18n="settingVolume">Громкость</span></div>
+                            <input type="range" class="volume-slider" min="0" max="100" value="80">
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-label"><i class="fas fa-microchip"></i> <span data-i18n="settingBitrate">Качество звука</span></div>
+                            <select>
+                                <option value="192" data-i18n="bitrate192">192 kbps (стандарт)</option>
+                                <option value="320" data-i18n="bitrate320">320 kbps (высокое)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-label"><i class="fas fa-chart-line"></i> <span data-i18n="settingEqualizer">Эквалайзер</span></div>
+                            <select class="equalizer-select">
+                                <option value="off" data-i18n="eqOff">Выключен</option>
+                                <option value="rock" data-i18n="eqRock">Рок</option>
+                                <option value="pop" data-i18n="eqPop">Поп</option>
+                                <option value="classical" data-i18n="eqClassical">Классика</option>
+                                <option value="jazz" data-i18n="eqJazz">Джаз</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-label"><i class="fas fa-power-off"></i> <span data-i18n="settingAutoStart">Автозагрузка</span></div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-label"><i class="fas fa-play-circle"></i> <span data-i18n="settingAutoPlay">Автовоспроизведение</span></div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-label"><i class="fas fa-moon"></i> <span data-i18n="settingDarkMode">Тёмная тема</span></div>
+                            <label class="switch">
+                                <input type="checkbox" id="darkModeSwitch" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item" style="grid-column: span 2;">
+                            <div class="setting-label"><i class="fas fa-keyboard"></i> <span data-i18n="settingHotkeys">Горячие клавиши</span></div>
+                            <div>
+                                <span class="key-badge">Ctrl+Shift+Space</span>
+                                <span class="key-badge">Ctrl+Shift+→</span>
+                                <span class="key-badge">Ctrl+Shift+←</span>
+                                <span class="key-badge">Ctrl+Shift+L</span>
+                                <span class="key-badge">Ctrl+Shift+D</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Блок разработчика -->
+        <div class="container fade-up">
+            <div class="dev-card">
+                <div class="dev-avatar">
+                    <img src="avatar.jpg" alt="avatar" onerror="this.onerror=null; this.parentNode.innerHTML='<i class=\'fas fa-code\'></i>';">
+                </div>
+                <div class="dev-info">
+                    <h2><span data-i18n="devTitle">Разработчик</span> <span style="color:#fed42a;">frizzylow</span></h2>
+                    <p data-i18n="devDesc">Независимый разработчик, создающий удобные инструменты. Проект с открытым исходным кодом.</p>
+                    <p><a href="https://github.com/Chopsicks/" target="_blank"><i class="fab fa-github"></i> GitHub</a> · <a href="https://t.me/frizzylow" target="_blank"><i class="fab fa-telegram"></i> @frizzylow</a></p>
+                </div>
+            </div>
+        </div>
+
+       <!-- Секция скачивания (переработанные карточки) -->
+<!-- Секция скачивания (переработанные карточки) -->
+<section id="download">
+    <div class="container">
+        <h2 class="section-title fade-up"><span data-i18n="downloadTitle">Скачать</span> <span data-i18n="downloadTitle2">приложение</span></h2>
+        <div class="download-grid">
+            <div class="download-card fade-up">
+                <i class="fab fa-windows"></i>
+                <h3 data-i18n="windows">Windows</h3>
+                <div class="version">10 / 11 (64/32-bit)</div>
+                <a href="http://f1236508.xsph.ru/Yandex_Music_x64_2.8.exe" target="_blank" class="btn" data-i18n="downloadBtn">Скачать .exe</a>
+            </div>
+            <div class="download-card fade-up">
+                <i class="fab fa-linux"></i>
+                <h3 data-i18n="linux">Linux</h3>
+                <div class="version">AppImage / deb</div>
+                <a href="#" class="btn btn-disabled" data-i18n="inDev">В разработке</a>
+            </div>
+        </div>
+        <div class="requirements fade-up">
+            <p data-i18n="sysReq1"><strong>Системные требования (Windows):</strong> Windows 10/11 (64-bit), 2 ГБ ОЗУ, VLC.</p>
+            <p data-i18n="sysReq2">Прослушивание музыки доступно только с подпиской Яндекс Плюс (ну почти :P)</p>
+        </div>
+    </div>
+</section>
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a id="privacyLink" data-i18n="privacy">О проекте</a>
+                    <a href="https://github.com/Chopsicks/yandex-music-mini" target="_blank">GitHub</a>
+                </div>
+                <div class="theme-lang">
+                    <div class="lang-selector">
+                        <button class="lang-btn active" data-lang="ru">RU</button>
+                        <button class="lang-btn" data-lang="en">EN</button>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle" title="Сменить тему">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ =====
+        const themeToggle = document.getElementById('themeToggle');
+        const icon = themeToggle.querySelector('i');
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+
+        function setTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-theme');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                if (darkModeSwitch) darkModeSwitch.checked = false;
+            } else {
+                document.body.classList.remove('light-theme');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                if (darkModeSwitch) darkModeSwitch.checked = true;
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // По умолчанию тёмная тема
+        setTheme('dark');
+
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.body.classList.contains('light-theme');
+            setTheme(isLight ? 'dark' : 'light');
+        });
+
+        if (darkModeSwitch) {
+            darkModeSwitch.addEventListener('change', (e) => {
+                setTheme(e.target.checked ? 'dark' : 'light');
+            });
+        }
+ 
+        // ===== ПЕРЕКЛЮЧЕНИЕ ЯЗЫКА (полный перевод) =====
+        const translations = {
+            ru: {
+                appName: 'Я.Музыка мини',
+                navHome: 'Главная',
+                navFeatures: 'Возможности',
+                navSettings: 'Настройки',
+                navDownload: 'Скачать',
+                heroTitle1: 'Одно приложение',
+                heroTitle2: 'Я.Музыки мини',
+                heroTitle3: 'избавит от множества других',
+                heroDesc: 'Компактный виджет с глобальными горячими клавишами, эквалайзером и умной волной',
+                heroBtn: 'Скачать для Windows',
+                mockupTitle: 'Shape of You',
+                mockupArtist: 'Ed Sheeran',
+                featuresTitle: 'Ключевые',
+                featuresTitle2: 'возможности',
+                feature1Title: 'Глобальные хоткеи',
+                feature1Desc: 'Управляйте музыкой из любого приложения: play/pause, следующий/предыдущий, лайк/дизлайк, громкость и скрытие окна. Полностью настраиваются.',
+                feature2Title: 'Эквалайзер с пресетами',
+                feature2Desc: '8 встроенных пресетов: рок, поп, классика, джаз, усиление басов и высоких. Выберите своё звучание.',
+                feature3Title: 'Моя волна',
+                feature3Desc: 'Персональная станция с настройками настроения, языка и разнообразия. Умные рекомендации под ваш вкус.',
+                feature4Title: 'Любимые треки и плейлисты',
+                feature4Desc: 'Добавляйте в избранное, управляйте плейлистами, создавайте радио на основе трека.',
+                settingsTitle: 'Гибкие',
+                settingsTitle2: 'настройки',
+                settingVolume: 'Громкость',
+                settingBitrate: 'Качество звука',
+                bitrate192: '192 kbps (стандарт)',
+                bitrate320: '320 kbps (высокое)',
+                settingEqualizer: 'Эквалайзер',
+                eqOff: 'Выключен',
+                eqRock: 'Рок',
+                eqPop: 'Поп',
+                eqClassical: 'Классика',
+                eqJazz: 'Джаз',
+                settingAutoStart: 'Автозагрузка',
+                settingAutoPlay: 'Автовоспроизведение',
+                settingDarkMode: 'Тёмная тема',
+                settingHotkeys: 'Горячие клавиши',
+                devTitle: 'Разработчик',
+                devDesc: 'Независимый разработчик, создающий удобные инструменты. Проект с открытым исходным кодом.',
+                downloadTitle: 'Скачать',
+                downloadTitle2: 'приложение',
+                windows: 'Windows',
+                winVersion: '10 / 11 (64-bit)',
+                linux: 'Linux',
+                linuxVersion: 'AppImage / deb',
+                downloadBtn: 'Скачать .exe',
+                inDev: 'В разработке',
+                sysReq1: '<strong>Системные требования (Windows):</strong> Windows 10/11 (64-bit), 2 ГБ ОЗУ, VLC.',
+                sysReq2: 'Прослушивание музыки доступно только с подпиской Яндекс Плюс (ну почти)',
+                privacy: 'О проекте',
+                modalTitle: 'О проекте',
+                modalText1: 'Это <strong>неофициальная</strong> фанатская версия приложения для Яндекс.Музыки. Мы не связаны с Яндексом и не несём ответственности за использование программы.',
+                modalText2: 'Оригинальный сервис: <a href="https://music.yandex.ru" target="_blank" style="color:#fed42a;">Яндекс.Музыка</a>.',
+                modalText3: 'Все права на контент принадлежат их владельцам. Приложение использует открытый API.',
+                modalClose: 'Закрыть'
+            },
+            en: {
+                appName: 'Ya.Music mini',
+                navHome: 'Home',
+                navFeatures: 'Features',
+                navSettings: 'Settings',
+                navDownload: 'Download',
+                heroTitle1: 'One app',
+                heroTitle2: 'Yandex Music',
+                heroTitle3: 'for your computer',
+                heroDesc: 'Compact widget with global hotkeys, equalizer and smart wave',
+                heroBtn: 'Download for Windows',
+                mockupTitle: 'My Wave',
+                mockupArtist: 'Yandex Music',
+                featuresTitle: 'Key',
+                featuresTitle2: 'features',
+                feature1Title: 'Global Hotkeys',
+                feature1Desc: 'Control music from any app: play/pause, next/previous, like/dislike, volume, and hide window. Fully customizable.',
+                feature2Title: 'Equalizer Presets',
+                feature2Desc: '8 built-in presets: rock, pop, classical, jazz, bass boost, treble boost. Choose your sound.',
+                feature3Title: 'My Wave',
+                feature3Desc: 'Personal station with mood, language, and diversity settings. Smart recommendations tailored to your taste.',
+                feature4Title: 'Favorites & Playlists',
+                feature4Desc: 'Add to favorites, manage playlists, create radio from a track.',
+                settingsTitle: 'Flexible',
+                settingsTitle2: 'settings',
+                settingVolume: 'Volume',
+                settingBitrate: 'Audio quality',
+                bitrate192: '192 kbps (standard)',
+                bitrate320: '320 kbps (high)',
+                settingEqualizer: 'Equalizer',
+                eqOff: 'Off',
+                eqRock: 'Rock',
+                eqPop: 'Pop',
+                eqClassical: 'Classical',
+                eqJazz: 'Jazz',
+                settingAutoStart: 'Auto-start',
+                settingAutoPlay: 'Auto-play',
+                settingDarkMode: 'Dark mode',
+                settingHotkeys: 'Hotkeys',
+                devTitle: 'Developer',
+                devDesc: 'Independent developer creating useful tools. Open source project.',
+                downloadTitle: 'Download',
+                downloadTitle2: 'app',
+                windows: 'Windows',
+                winVersion: '10 / 11 (64/32-bit)',
+                linux: 'Linux',
+                linuxVersion: 'AppImage / deb',
+                downloadBtn: 'Download .exe',
+                inDev: 'In development',
+                sysReq1: '<strong>System requirements (Windows):</strong> Windows 10/11 (64-bit), 2 GB RAM, VLC.',
+                sysReq2: 'Music streaming requires Yandex Plus subscription.',
+                subLink: 'Subscription terms',
+                sysReq3: 'Source code on',
+                privacy: 'Privacy policy',
+                modalTitle: 'About',
+                modalText1: 'This is an <strong>unofficial</strong> fan-made version of the Yandex Music app. We are not affiliated with Yandex and take no responsibility for the use of this software.',
+                modalText2: 'Original service: <a href="https://music.yandex.ru" target="_blank" style="color:#fed42a;">Yandex Music</a>.',
+                modalText3: 'All rights to the content belong to their respective owners. The app uses an open API.',
+                modalClose: 'Close'
+            }
+        };
+
+        const langBtns = document.querySelectorAll('.lang-btn');
+        let currentLang = 'ru';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translations[lang][key];
+                    } else {
+                        el.innerHTML = translations[lang][key];
+                    }
+                }
+            });
+            langBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLanguage(btn.dataset.lang);
+            });
+        });
+
+        // ===== МОДАЛЬНОЕ ОКНО =====
+        const modal = document.getElementById('privacyModal');
+        const privacyLink = document.getElementById('privacyLink');
+        const closeModal = document.getElementById('closeModal');
+
+        privacyLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.add('active');
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // ===== АНИМАЦИЯ ПРИ СКРОЛЛЕ =====
+        const fadeElements = document.querySelectorAll('.fade-up');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        fadeElements.forEach(el => observer.observe(el));
+
+
+        // ===== ПЛАВНЫЙ СКРОЛЛ К ЯКОРЯМ =====
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // ===== ВЫПАДАЮЩЕЕ МЕНЮ ПРОФИЛЯ =====
+        const userHeader = document.getElementById('mockupUserHeader');
+        const profileMenu = document.getElementById('profileContextMockup');
+
+        userHeader.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!userHeader.contains(e.target) && !profileMenu.contains(e.target)) {
+                profileMenu.classList.remove('active');
+            }
+        });
+
+        // Инициализация языка
+        setLanguage('ru');
+    </script>
+</body>
+</html>
